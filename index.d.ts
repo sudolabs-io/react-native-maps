@@ -518,6 +518,7 @@ declare module 'react-native-maps' {
     opacity: number;
     zIndex?: number;
     shouldReplaceMapContent?: boolean;
+    headers?: object;
   }
 
   export class WMSTile extends React.Component<MapWMSTileProps, any> {}

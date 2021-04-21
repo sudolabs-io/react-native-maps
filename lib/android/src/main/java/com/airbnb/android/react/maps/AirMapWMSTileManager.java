@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -63,5 +64,10 @@ public class AirMapWMSTileManager extends ViewGroupManager<AirMapWMSTile> {
   @ReactProp(name = "opacity", defaultFloat = 1.0f)
   public void setOpacity(AirMapWMSTile view, float opacity) {
     view.setOpacity(opacity);
+  }
+
+  @ReactProp(name = "headers")
+  public void setRequestProperties(AirMapWMSTile view, ReadableMap headers) {
+    view.setRequestProperties(headers);
   }
 }
