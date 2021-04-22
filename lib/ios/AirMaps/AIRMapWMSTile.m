@@ -11,6 +11,7 @@
 
 @implementation AIRMapWMSTile {
     BOOL _urlTemplateSet;
+    BOOL _headersSet;
 }
 
 - (void)setShouldReplaceMapContent:(BOOL)shouldReplaceMapContent
@@ -48,17 +49,25 @@
     }
     [self update];
 }
+
+- (void)setHeaders:(NSDictionary *)headers{
+    _headers = headers;
+    _headersSet = YES;
+    [self createTileOverlayAndRendererIfPossible];
+    [self update];
+}
+
+
 - (void)setUrlTemplate:(NSString *)urlTemplate{
     _urlTemplate = urlTemplate;
     _urlTemplateSet = YES;
-    [self createTileOverlayAndRendererIfPossible];
     [self update];
 }
 
 - (void) createTileOverlayAndRendererIfPossible
 {
-    if (!_urlTemplateSet) return;
-    self.tileOverlay  = [[TileOverlay alloc] initWithURLTemplate:self.urlTemplate];
+    if (!_urlTemplateSet && !_headersSet) return;
+    self.tileOverlay  = [[TileOverlay alloc] initWithURLTemplate:self.urlTemplate headers:self.headers];
     self.tileOverlay.canReplaceMapContent = self.shouldReplaceMapContent;
 
     if(self.minimumZ) {
@@ -112,16 +121,18 @@
 @synthesize MapX;
 @synthesize MapY;
 @synthesize FULL;
+@synthesize httpHeaders;
 
--(id) initWithURLTemplate:(NSString *)URLTemplate {
+-(id) initWithURLTemplate:(NSString *)URLTemplate headers:(NSDictionary *)HTTPHeaders{
     self = [super initWithURLTemplate:URLTemplate];
+    httpHeaders = HTTPHeaders;
     MapX = -20037508.34789244;
     MapY = 20037508.34789244;
     FULL = 20037508.34789244 * 2;
     return self ;
 }
 
--(NSURL *)URLForTilePath:(MKTileOverlayPath)path{
+-(NSURL *)constructURLForTilePath:(MKTileOverlayPath)path{
     NSArray *bb = [self getBoundBox:path.x yAxis:path.y zoom:path.z];
     NSMutableString *url = [self.URLTemplate mutableCopy];
     [url replaceOccurrencesOfString: @"{minX}" withString:[NSString stringWithFormat:@"%@", bb[0]] options:0 range:NSMakeRange(0, url.length)];
@@ -131,6 +142,23 @@
     [url replaceOccurrencesOfString: @"{width}" withString:[NSString stringWithFormat:@"%d", (int)self.tileSize.width] options:0 range:NSMakeRange(0, url.length)];
     [url replaceOccurrencesOfString: @"{height}" withString:[NSString stringWithFormat:@"%d", (int)self.tileSize.height] options:0 range:NSMakeRange(0, url.length)];
     return [NSURL URLWithString:url];
+}
+
+- (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData * _Nullable, NSError * _Nullable))result{
+    NSURL *tileUrl = [self constructURLForTilePath:path];
+    
+    NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    sessionConfiguration.HTTPAdditionalHeaders = [NSDictionary dictionaryWithDictionary:self.httpHeaders];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:tileUrl];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        result(data, error);
+    }];
+    [dataTask resume];
+}
+
+-(NSURL *)URLForTilePath:(MKTileOverlayPath)path{
+    return [self constructURLForTilePath:path];
 }
 
 -(NSArray *)getBoundBox:(NSInteger)x yAxis:(NSInteger)y zoom:(NSInteger)zoom{
