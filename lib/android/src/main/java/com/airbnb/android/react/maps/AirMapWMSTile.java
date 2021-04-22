@@ -79,9 +79,9 @@ public class AirMapWMSTile extends AirMapFeature {
         InputStream inputStream = null;
         ByteArrayOutputStream buffer = null;
         URL url = getTileUrl(x, y, zoom);
-        if (url == null)
+        if (url == null) {
           return null;
-
+        }
         try {
           if (getUrlTemplate().contains(HTTPS_KEYWORD)) {
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
