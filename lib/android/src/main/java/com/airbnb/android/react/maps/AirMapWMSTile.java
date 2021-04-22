@@ -153,7 +153,7 @@ public class AirMapWMSTile extends AirMapFeature {
   private TileOverlayOptions tileOverlayOptions;
   private TileOverlay tileOverlay;
   private AIRMapGSUrlTileProvider tileProvider;
-  private AIRMapGSUrlTileProvider.AIRMapUrlTile onlyTileProvider;
+  private AIRMapGSUrlTileProvider.AIRMapUrlTile customTileProvider;
 
   private String urlTemplate;
   private float zIndex;
@@ -230,8 +230,8 @@ public class AirMapWMSTile extends AirMapFeature {
     options.transparency(1-opacity);
     this.tileProvider = new AIRMapGSUrlTileProvider(this.tileSize, this.tileSize, this.urlTemplate);
     if(this.requestProperties != null) {
-      this.onlyTileProvider = this.tileProvider.new AIRMapUrlTile(this.tileSize, this.tileSize, this.requestProperties);
-      options.tileProvider(this.onlyTileProvider);
+      this.customTileProvider = this.tileProvider.new AIRMapUrlTile(this.tileSize, this.tileSize, this.requestProperties);
+      options.tileProvider(this.customTileProvider);
     } else {
       options.tileProvider(this.tileProvider);
     }
