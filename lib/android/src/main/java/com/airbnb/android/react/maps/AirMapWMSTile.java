@@ -76,7 +76,7 @@ public class AirMapWMSTile extends AirMapFeature {
       }
 
       private byte[] readTileImage(int x, int y, int zoom) {
-        InputStream in = null;
+        InputStream inputStream = null;
         ByteArrayOutputStream buffer = null;
         URL url = getTileUrl(x, y, zoom);
         if (url == null)
@@ -89,20 +89,20 @@ public class AirMapWMSTile extends AirMapFeature {
               connection.addRequestProperty(entry.getKey(), (String) entry.getValue());
             }
             connection.connect();
-            in = connection.getInputStream();
+            inputStream = connection.getInputStream();
           } else {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             for (Map.Entry<String, Object> entry : requestProperties.toHashMap().entrySet()) {
               connection.addRequestProperty(entry.getKey(), (String) entry.getValue());
             }
             connection.connect();
-            in = connection.getInputStream();
+            inputStream = connection.getInputStream();
           }
           buffer = new ByteArrayOutputStream();
 
           byte[] data = new byte[BUFFER_SIZE];
           int nRead;
-          while ((nRead = in.read(data, 0, BUFFER_SIZE)) != -1) {
+          while ((nRead = inputStream.read(data, 0, BUFFER_SIZE)) != -1) {
             buffer.write(data, 0, nRead);
           }
           buffer.flush();
@@ -111,8 +111,8 @@ public class AirMapWMSTile extends AirMapFeature {
           Log.e(ORIGIN, e.getMessage());
           return null;
         } finally {
-          if (in != null) try {
-            in.close();
+          if (inputStream != null) try {
+            inputStream.close();
           } catch (Exception e) {
             Log.e(ORIGIN, e.getMessage());
           }
