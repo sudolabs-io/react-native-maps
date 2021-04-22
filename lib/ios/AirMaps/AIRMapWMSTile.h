@@ -24,6 +24,7 @@
 @property (nonatomic, strong) MKTileOverlay *tileOverlay;
 @property (nonatomic, strong) MKTileOverlayRenderer *renderer;
 @property (nonatomic, copy) NSString *urlTemplate;
+@property (nonatomic, copy) NSDictionary *headers;
 @property NSInteger maximumZ;
 @property NSInteger minimumZ;
 @property NSInteger tileSize;
@@ -38,4 +39,8 @@
 
 @interface TileOverlay : MKTileOverlay
 @property (nonatomic) double MapX,MapY,FULL;
+@property (nonatomic) NSDictionary *httpHeaders;
+-(id) initWithURLTemplate:(NSString *)URLTemplate headers:(NSDictionary *)HTTPHeaders;
+-(NSURL *)constructURLForTilePath:(MKTileOverlayPath)path;
+
 @end
