@@ -24,6 +24,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class AirMapWMSTile extends AirMapFeature {
   private static final double[] mapBound = {-20037508.34789244, 20037508.34789244};
   private static final double FULL = 20037508.34789244 * 2;
+  private static final String HTTPS_KEYWORD = "https";
   private static final String ORIGIN = AirMapUrlTile.class.getSimpleName();
 
   class AIRMapGSUrlTileProvider extends UrlTileProvider {
@@ -82,7 +83,7 @@ public class AirMapWMSTile extends AirMapFeature {
           return null;
 
         try {
-          if(getUrlTemplate().contains("https")) {
+          if (getUrlTemplate().contains(HTTPS_KEYWORD)) {
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             for (Map.Entry<String, Object> entry : requestProperties.toHashMap().entrySet()) {
               connection.addRequestProperty(entry.getKey(), (String) entry.getValue());
