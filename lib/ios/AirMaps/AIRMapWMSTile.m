@@ -61,6 +61,7 @@
 - (void)setUrlTemplate:(NSString *)urlTemplate{
     _urlTemplate = urlTemplate;
     _urlTemplateSet = YES;
+    [self createTileOverlayAndRendererIfPossible];
     [self update];
 }
 
