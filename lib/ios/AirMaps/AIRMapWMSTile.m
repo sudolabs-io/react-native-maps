@@ -67,7 +67,7 @@
 
 - (void) createTileOverlayAndRendererIfPossible
 {
-    if (!_urlTemplateSet && !_headersSet) return;
+    if (!_urlTemplateSet || (!_urlTemplateSet && _headersSet)) return;
     self.tileOverlay  = [[TileOverlay alloc] initWithURLTemplate:self.urlTemplate headers:self.headers];
     self.tileOverlay.canReplaceMapContent = self.shouldReplaceMapContent;
 
@@ -142,7 +142,7 @@
     [url replaceOccurrencesOfString: @"{maxY}" withString:[NSString stringWithFormat:@"%@", bb[3]] options:0 range:NSMakeRange(0, url.length)];
     [url replaceOccurrencesOfString: @"{width}" withString:[NSString stringWithFormat:@"%d", (int)self.tileSize.width] options:0 range:NSMakeRange(0, url.length)];
     [url replaceOccurrencesOfString: @"{height}" withString:[NSString stringWithFormat:@"%d", (int)self.tileSize.height] options:0 range:NSMakeRange(0, url.length)];
-    return [NSURL URLWithString:url];
+    return [NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 }
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData * _Nullable, NSError * _Nullable))result{
