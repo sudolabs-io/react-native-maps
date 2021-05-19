@@ -67,7 +67,7 @@
 
 - (void) createTileOverlayAndRendererIfPossible
 {
-    if (!_urlTemplateSet && !_headersSet) return;
+    if (!_urlTemplateSet || (!_urlTemplateSet && _headersSet)) return;
     self.tileOverlay  = [[TileOverlay alloc] initWithURLTemplate:self.urlTemplate headers:self.headers];
     self.tileOverlay.canReplaceMapContent = self.shouldReplaceMapContent;
 
