@@ -46,12 +46,24 @@ declare module 'react-native-maps' {
     y: number;
   }
 
+  export type EventActionType =
+    | 'marker-press'
+    | 'polygon-press'
+    | 'polyline-press'
+    | 'callout-press'
+    | 'press'
+    | 'long-press'
+    | 'overlay-press'
+    | undefined;
+
   // helper interface
   export interface MapEvent<T = {}>
     extends NativeSyntheticEvent<
       T & {
         coordinate: LatLng;
         position: Point;
+        action: EventActionType;
+        id?: string;
       }
     > {}
 
@@ -479,7 +491,9 @@ declare module 'react-native-maps' {
     lineDashPattern?: number[];
   }
 
-  export class Circle extends React.Component<MapCircleProps, any> {}
+  export class Circle extends React.Component<MapCircleProps, any> {
+    setNativeProps: (props: any) => void;
+  }
 
   // =======================================================================
   //  UrlTile & LocalTile
