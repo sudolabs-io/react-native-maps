@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "0.0.5",
-    "eslint": "5.16.0"
+    "eslint": "10.2.1"
   },
   "dependencies": {
     "@types/geojson": "^7946.0.7"
